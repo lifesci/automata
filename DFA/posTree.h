@@ -4,6 +4,7 @@ typedef struct POSTREE {
 	int height;
 	struct POSTREE *left;
 	struct POSTREE *right;
+	struct REGEX *ref;
 } POSTREE;
 
 POSTREE *search(POSTREE *node, int key);
@@ -17,4 +18,6 @@ POSTREE *leftRotate(POSTREE *node);
 int getHeight(POSTREE *node);
 int higherChild(POSTREE *node, POSTREE **highestChild);
 int isLeaf(POSTREE *node);
-POSTREE *makeNode(int key);
+POSTREE *makeNode(int key, struct REGEX *ref);
+POSTREE *merge(POSTREE *root1, POSTREE *root2);
+POSTREE *join(POSTREE *t1, POSTREE *t2);

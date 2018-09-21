@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "postree.h"
 #include "syntax.h"
+#include "postree.h"
 #include "pretty.h"
 
 REGEX* parseRegex(char *input, int *index);

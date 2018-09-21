@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "posTree.h"
+#include "syntax.h"
 
 POSTREE *search(POSTREE *node, int key) {
 	int val = node->pos;
@@ -20,16 +21,21 @@ POSTREE *search(POSTREE *node, int key) {
 	}
 }
 
-POSTREE *insert(POSTREE *root, int key) {
-	POSTREE *res = search(root, key);
-	if (res->pos != key) {
-		POSTREE *newNode = makeNode(key);
-		if (key < res->pos) {
-			res->left = newNode;
-		} else {
-			res->right = newNode;
+POSTREE *insert(POSTREE *root, int key, REGEX *ref) {
+	if (root) {
+		POSTREE *res = search(root, key);
+		if (res->pos != key) {
+			POSTREE *newNode = makeNode(key, ref);
+			if (key < res->pos) {
+				res->left = newNode;
+			}
+			else {
+				res->right = newNode;
+			}
+			return rebalanceAVL(res, root);
 		}
-		return rebalanceAVL(res, root);
+	} else {
+		return makeNode(key, ref);
 	}
 }
 
@@ -132,11 +138,36 @@ int isLeaf(POSTREE *node) {
 	return (!node->left && !node->right);
 }
 
-POSTREE *makeNode(int key) {
+POSTREE *makeNode(int key, REGEX *ref) {
 	POSTREE *node = (struct POSTREE *) malloc(sizeof(struct POSTREE));
 	node->pos = key;
 	node->height = 0;
 	node->left = NULL;
 	node->right = NULL;
+	node->ref = ref;
 	return node;
+}
+
+POSTREE *merge(POSTREE *root1, POSTREE *root2) {
+	POSTREE *newRoot = NULL;
+	if (root1) {
+		newRoot = makeNode(root1->pos, root1->ref);
+		newRoot = join(newRoot, root1->left);
+		newRoot = join(newRoot, root1->right);
+		newRoot = join(newRoot, root2);
+	} else if (root2) {
+		newRoot = makeNode(root2->pos, root2->ref);
+		newRoot = join(newRoot, root2->left);
+		newRoot = join(newRoot, root2->right);
+	}
+	return newRoot;
+}
+
+POSTREE *join(POSTREE *t1, POSTREE *t2) {
+	if (t2) {
+		t1 = insert(t1, t2->pos, t2->ref);
+		t1 = join(t1, t2->left);
+		t1 = join(t1, t2->right);
+	}
+	return t1;
 }

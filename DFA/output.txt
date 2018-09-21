@@ -1,13 +1,5 @@
 AND
-	OR
-		AND
-			AND
-				AND
-					AND
-						Epsilon
-						t
-					e
-				s
-			t
+	AND
 		Epsilon
+		a
 	#
